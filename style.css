@@ -147,14 +147,14 @@ header
 .sec h2 
 {
     font-size: 3em;
-    color: whitesmoke;
+    color: black;
     margin-bottom: 10px;
 }
 
 .sec p
 {
     font-size: 1em;
-    color: whitesmoke;
+    color: black;
     font-weight: 300;
     text-align: justify;
 
