@@ -1,11 +1,17 @@
 const navLinkEls = document.querySelectorAll('.nav_link');
+const navbar = document.querySelector('.navbar')
 const windowPathname = window.location.pathname;
 
-navLinkEls.forEach(navLinkEL => {
-    if (navLinkEL.href.includes(windowPathname)){
-        navLinkEL.classList.add('active');
-    }
-});
+navbar.addEventListener('click', ()=>{
+    navbar.classList.toggle('active');
+    document.addEventListener('click', (e)=>{
+        if(!e.composedPath().includes(navbar)){
+            navbar.classList.remove('active');
+        }
+    })
+})
+
+
 
 let text = document.getElementById("text");
 let left_item = document.getElementById("left_item");
