@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Summer 2023 @ Error Corp</title>
+        <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
+        <link rel=" stylesheet" type="text/css" href="team_page.css">
+    </head>
+    <body>
+        <header>
+            <h3 class="logo">ERROR CORP</h3>
+            <div class="header_content">
+                <nav class="navbar">
+                    <a href="./index.html">Home</a>
+                    <a href="./projects.html">Projects</a>
+                    <a href="./team.html" class="active">Team</a>
+                    <a href="./extras.html">Extras</a>
+                </nav>
+            </div>
+        </header>
+        <section class="sec">
+            <h2><br>Degeneracy and the [[17,1,5]] Code</h2>
+            <br><br>
+            <p>
+                <h1 id="group-theory-and-stabilizer-formalism">Group Theory and
+                    Stabilizer Formalism</h1>
+                    <h3 id="explaining-group-theory-using-modular-arithmetic">Explaining
+                    Group Theory Using Modular Arithmetic</h3>
+                    <p><br />
+                    This section is a quick crash course on the group theory necessary to
+                    understand stabilizer codes. I’m going to use the integers mod <span
+                    class="math inline">3</span>, (<span class="math inline">ℤ/3ℤ)</span>,
+                    as my example of choice throughout, because it is probably the simplest.
+                    For reference, <span class="math display">$$\begin{aligned}
+                        \mathbb{Z}&amp;\to \mathbb{Z}/3\mathbb{Z}\\
+                        &amp;\to \{0,1,2\}\\
+                        x&amp;\mapsto \text{remainder of }x/3
+                    \end{aligned}$$</span></p>
+                    <div class="definition">
+                    <p><strong>Definition 1</strong>. <span class="math inline">ℤ/3ℤ</span>
+                    is a <em>group</em> under addition, meaning addition is the <em>group
+                    operation</em>. It is a group because it satisfies the following:</p>
+                    <ol>
+                    <li><p><span class="math inline">ℤ/3ℤ</span> has an identity, <span
+                    class="math inline">0</span>. For any number <span
+                    class="math inline"><em>x</em></span>, we know <span
+                    class="math inline">0 + <em>x</em> = <em>x</em> + 0 = <em>x</em></span></p></li>
+                    <li><p>If <span
+                    class="math inline"><em>a</em>, <em>b</em> ∈ ℤ/3ℤ</span>, then <span
+                    class="math inline"><em>a</em> + <em>b</em></span> in <span
+                    class="math inline">ℤ/3ℤ</span>. We know <span
+                    class="math inline">1, 2 ∈ ℤ/3ℤ</span>. Then we have <span
+                    class="math inline">1 + 2 = 3,</span> which is <span
+                    class="math inline">0 mod  3</span>, and <span
+                    class="math inline">0 ∈ ℤ/3ℤ</span>, so we’re good.</p></li>
+                    <li><p>Every element of <span class="math inline">ℤ/3ℤ</span> has an
+                    additive inverse. this just means we can subtract in <span
+                    class="math inline">ℤ/3ℤ</span>.</p></li>
+                    <li><p>Associativity: <span
+                    class="math inline"><em>a</em> + (<em>b</em>+<em>c</em>) = (<em>a</em>+<em>b</em>) + <em>c</em></span></p></li>
+                    </ol>
+                    </div>
+                    <p>The Pauli group is a group under <span class="math inline"><em>matrix
+                    multiplication</em></span>, meaning it has all the properties above, but
+                    with matrix multiplication instead of addition. Note that commutativity
+                    is not required for the definition of a group. This is essential to how
+                    we use the Pauli group in error correction, since matrix algebra is not
+                    commutative. A group where all elements commute with each other is
+                    called an <em>abelian</em> group.</p>
+                    <div class="definition">
+                    <p><strong>Definition 2</strong>. Given an additive group <span
+                    class="math inline"><em>G</em></span> and subgroup <span
+                    class="math inline"><em>H</em></span>, a <em>coset</em> of <span
+                    class="math inline"><em>H</em></span> is defined by <span
+                    class="math inline"><em>g</em> + <em>H</em></span> for some <span
+                    class="math inline"><em>g</em> ∈ <em>G</em></span>. So, given the group
+                    of integers <span class="math inline">ℤ</span> and the subgroup <span
+                    class="math inline">3ℤ</span>, the cosets of <span
+                    class="math inline">3ℤ</span> are <span
+                    class="math inline">1 + 3ℤ</span> and <span
+                    class="math inline">2 + 3ℤ</span>, which we represent by <span
+                    class="math inline">1, 2</span>. This is because, given <span
+                    class="math inline">5</span> for example, <span
+                    class="math inline">5 = 3 + 2</span> and <span
+                    class="math inline">3</span> is in <span class="math inline">3ℤ</span>,
+                    so <span class="math inline">5 + 3ℤ</span> simplifies to <span
+                    class="math inline">2 + 3ℤ</span>.<br />
+                    <span class="math inline">ℤ/3ℤ</span> is an example of what is called a
+                    <em>quotient group</em>, where we "quotient out" by <span
+                    class="math inline">3ℤ</span>. The group <span
+                    class="math inline">3ℤ</span> is all multiples of <span
+                    class="math inline">3</span>, and we can think of the cosets as the
+                    remainders of the quotient group, which is why these cosets are <span
+                    class="math inline">1</span> and <span class="math inline">2</span>.</p>
+                    <p>Cosets also lend themselves to the definition of an <em>equivalence
+                    class</em>. We can also label these representatives as <span
+                    class="math inline">[0], [1], [2]</span>, now referring to equivalence
+                    classes. Two numbers are in the same equivalence class if they’re in the
+                    same coset. So, for example, <span
+                    class="math inline">1, 4, 7, 16</span> are all in the <span
+                    class="math inline">[1]</span> equivalence class, meaning they are all
+                    equivalent mod <span class="math inline">3</span>.</p>
+                    </div>
+                    <div class="definition">
+                    <p><strong>Definition 3</strong>. Let <span
+                    class="math inline"><em>G</em></span> and <span
+                    class="math inline"><em>H</em></span> be groups. A <em>group
+                    isomorphism</em> is an invertible function <span
+                    class="math inline"><em>f</em></span> from <span
+                    class="math inline"><em>G</em></span> to <span
+                    class="math inline"><em>H</em></span>, meaning there is some <span
+                    class="math inline"><em>f</em><sup>−1</sup></span> from <span
+                    class="math inline"><em>H</em></span> to <span
+                    class="math inline"><em>G</em></span>. Additionally, <span
+                    class="math inline"><em>f</em></span> preserves <em>group
+                    structure</em>. For example, let <span
+                    class="math inline"><em>G</em></span> be <span
+                    class="math inline">ℤ/4ℤ</span> with cosets <span
+                    class="math inline">{0, 1, 2, 3}</span>, and let <span
+                    class="math inline"><em>H</em></span> be the group <span
+                    class="math inline">ℤ/5ℤ</span> under multiplication, denoted by <span
+                    class="math inline">(ℤ/5ℤ)<sup>×</sup></span> with cosets <span
+                    class="math inline">{1, 2, 3, 4}</span>. There is no <span
+                    class="math inline">0</span> because <span class="math inline">0</span>
+                    doesn’t have a multiplicative inverse modulo <span
+                    class="math inline">5</span>.</p>
+                    <p>We can make a function <span class="math inline"><em>f</em></span>
+                    that will basically "match" the elements and group operation of <span
+                    class="math inline"><em>G</em></span> to that of <span
+                    class="math inline"><em>H</em></span>. <span
+                    class="math display">$$\begin{aligned}
+                            f: G&amp;\to H\\
+                            [0]&amp;\mapsto 1\\
+                            [1]&amp;\mapsto 2\\
+                            [2]=[1+1]&amp;\mapsto 2\times 2 = 4\\
+                            [3]=[2+1]&amp;\mapsto 4\times 2\bmod 5 = 3\\
+                            +&amp;\mapsto \times
+                        
+                    \end{aligned}$$</span> Through this, we can see for example: <span
+                    class="math display">$$\begin{aligned}
+                            f([1]+[2])&amp;=f[3]=3\\
+                            f([1])\times f([2])&amp;=2\times 4=3\\
+                            f([1]+[2])&amp;=f([1])\times f([2])
+                        
+                    \end{aligned}$$</span> The illustration above demonstrates the
+                    definition of preserving group structure. Given some <span
+                    class="math inline"><em>a</em>, <em>b</em></span> in a group <span
+                    class="math inline">(<em>G</em>,+<sub><em>G</em></sub>)</span> and <span
+                    class="math inline"><em>c</em>, <em>d</em></span> in a group <span
+                    class="math inline">(<em>H</em>,+<sub><em>H</em></sub>)</span>, we must
+                    have <span
+                    class="math display"><em>f</em>(<em>a</em>+<sub><em>G</em></sub><em>b</em>) = <em>f</em>(<em>a</em>)+<sub><em>H</em></sub><em>f</em>(<em>b</em>)</span>
+                    This "matching" can also be reversed, meaning we can go from <span
+                    class="math inline"><em>H</em></span> to <span
+                    class="math inline"><em>G</em></span>. It is the ability to ’reverse’
+                    (invert) the function that makes <span
+                    class="math inline"><em>f</em></span> a <em>group isomorphism</em> and
+                    <span class="math inline"><em>G</em></span> and <span
+                    class="math inline"><em>H</em></span> <em>isomorphic</em>.</p>
+                    </div>
+                    <p>In group theory, if two groups are isomorphic, then they are for all
+                    intents and purposes equivalent. This is because for whatever
+                    calculations we do in group <span class="math inline"><em>G</em></span>,
+                    we can apply a function like <span class="math inline"><em>f</em></span>
+                    to ’translate’ this work into the language of <span
+                    class="math inline"><em>H</em></span>. This property is used to allow us
+                    to map a harder problem onto a group which is easier to work with. We
+                    can figure out a solution in the easier space, and then invert the map
+                    to get back to the original group.</p>
+                    <p>An isomorphism which is key to quantum error correction is called the
+                    Pauli to Binary Isomorphism, and it allows us to analyze Pauli errors in
+                    the language of classical error coding and parity check matrices.</p>
+                    <div class="definition">
+                    <p><strong>Definition 4</strong>. The <em>stabilizer set</em> of a group
+                    <span class="math inline"><em>G</em></span> is the set of elements <span
+                    class="math inline"><em>s</em> ∈ <em>G</em></span> such that <span
+                    class="math inline"><em>s</em> ∘ <em>g</em> = <em>g</em> ∘ <em>s</em> = <em>g</em></span>
+                    for all <span class="math inline"><em>g</em> ∈ <em>G</em></span>. The
+                    identity (<span class="math inline">0</span> for addition, <span
+                    class="math inline">1</span> for multiplication) of any group is an
+                    obvious stabilizer. Let’s go back to <span
+                    class="math inline"><em>G</em> = ℤ/3ℤ</span>. Obviously <span
+                    class="math inline">0</span> is a stabilizers, but so are <span
+                    class="math inline">3, 6, 9,</span> etc. The elements of <span
+                    class="math inline">3ℤ</span> are stabilizers in <span
+                    class="math inline"><em>G</em></span>. If <span
+                    class="math inline"><em>g</em></span> is in the coset <span
+                    class="math inline">1 + 3ℤ</span>, then <span
+                    class="math inline"><em>g</em> + 3, <em>g</em> + 6, <em>g</em> + 9</span>
+                    are all in <span class="math inline">1 + 3ℤ</span> as well. In this way,
+                    all multiples of <span class="math inline">3</span> "act like" <span
+                    class="math inline">0</span>, which is how we usually think of modular
+                    arithmetic.</p>
+                    </div>
+                    <div class="definition">
+                    <p><strong>Definition 5</strong>. The <em>centralizer</em> of a group
+                    <span class="math inline"><em>G</em></span> is the set of elements <span
+                    class="math inline"><em>c</em></span> such that <span
+                    class="math inline"><em>c</em><em>g</em> = <em>g</em><em>a</em></span>
+                    for all <span class="math inline"><em>g</em> ∈ <em>G</em></span>.
+                    Basically, any <span class="math inline"><em>c</em></span> will commute
+                    with any element of <span class="math inline"><em>G</em></span>. Since
+                    stabilizers trivially commute with all <span
+                    class="math inline"><em>g</em></span>, then the stabilizers are a subset
+                    of the centralizers.</p>
+                    </div>
+                    <p>When we encode qubits, we will see that the group of stabilizers
+                    corresponds to all possible basis states of a logical <span
+                    class="math inline">$\ket{0}$</span> qubit. As we saw with the <span
+                    class="math inline">ℤ/3ℤ</span> example, stabilizers "act like <span
+                    class="math inline">0</span>"/the identity, so it makes sense that the
+                    stabilizers of a code would correspond to logical <span
+                    class="math inline">0</span>.</p>
+                    <p>If our code only encodes one qubit, then the set of centralizers
+                    which excludes the stabilizers corresponds to the basis states of a
+                    logical <span class="math inline">$\ket{1}$</span> qubit.</p>
+                    <h3 id="pauli-to-binary-isomorphism-and-stabilizer-codes">Pauli to
+                    Binary Isomorphism and Stabilizer Codes</h3>
+                    <p>The Pauli to Binary isomorphism, which I will denote by <span
+                    class="math inline"><em>β</em>,</span> allows us to translate between
+                    Pauli error operators and discrete stabilizer codes that are more
+                    familiar to classical error correction. The Pauli group is generated by
+                    the <span class="math inline"><em>I</em>, <em>X</em>, <em>Y</em>,</span>
+                    and <span class="math inline"><em>Z</em></span> operators. <span
+                    class="math inline"><em>I</em></span> is the identity, <span
+                    class="math inline"><em>X</em></span> is a bit-flip, <span
+                    class="math inline"><em>Z</em></span> is a phase flip, and <span
+                    class="math inline"><em>Y</em></span> is the combination of <span
+                    class="math inline"><em>X</em></span> and <span
+                    class="math inline"><em>Z</em></span> operators. The <em><span
+                    class="math inline"><em>N</em></span>-fold Pauli group</em> refers to
+                    the group generated by the tensor products of Pauli operators up to
+                    degree <span class="math inline"><em>N</em></span> and is denoted by
+                    <span class="math inline">∏<sup>⊗<em>N</em></sup></span>. We denote the
+                    binary space of dimension <span class="math inline">2<em>N</em></span>
+                    by <span class="math inline">𝔽<sub>2</sub><sup>2<em>N</em></sup></span>,
+                    which is basically a space of binary vectors with <span
+                    class="math inline">2<em>N</em></span> entries. The isomorphism <span
+                    class="math inline"><em>β</em></span> is defined as <span
+                    class="math display">$$\begin{aligned}
+                        \beta: \prod^{\hspace{10mm}\otimes N}&amp;\to\mathbb{F}^{2N}_2\\
+                        I&amp;\mapsto (0|0)\\
+                        X&amp;\mapsto (0|1)\\
+                        Z&amp;\mapsto (1|0)\\
+                        Y&amp;\mapsto (1|1)
+                    \end{aligned}$$</span> For example, take the string
+                    <strong>ZXI</strong>. We get <span
+                    class="math display"><strong>ZXI</strong> ↦ 100|010</span> because the
+                    beginning of the two-dimensional string is <span
+                    class="math inline">1|0,</span> following by <span
+                    class="math inline">0|1</span> to get <span
+                    class="math inline">10|01</span>, and finished with <span
+                    class="math inline">0|0</span> for the identity.</p>
+                    <p>In order to preserve the non-abelian group structure of the Pauli
+                    group, we need to introduce an operation called the <em>symplectic
+                    product</em>.</p>
+                    <div class="definition">
+                    <p><strong>Definition 6</strong>. Let <span
+                    class="math inline"><em>g</em></span> and <span
+                    class="math inline"><em>h</em></span> be binary representations of <span
+                    class="math inline"><em>N</em>−</span>fold tensor products. The
+                    symplectic product is defined as follows: <span
+                    class="math display"><em>g</em> ⊙ <em>h</em> = (<em>g</em><sub><em>z</em></sub>⋅<em>h</em><sub><em>x</em></sub>+<em>g</em><sub><em>x</em></sub>⋅<em>h</em><sub><em>z</em></sub>) mod  2</span>
+                    where <span class="math inline">⋅</span> represents the usual vector dot
+                    product.</p>
+                    </div>
+                    <p>We define this operation because it only evaluates to <span
+                    class="math inline">0</span> if <span
+                    class="math inline"><em>g</em></span> and <span
+                    class="math inline"><em>h</em></span> commute, so for example all valid
+                    codewords (the centralizer group) should commute.</p>
+                    <p>In a parity check matrix <span
+                    class="math inline"><strong>H</strong> = (<em>H</em><sub><em>z</em></sub>|<em>H</em><sub><em>x</em></sub>)</span>,
+                    the symplectic product looks like <span
+                    class="math display"><em>H</em><sub><em>z</em></sub><em>H</em><sub><em>x</em></sub><sup><em>T</em></sup> + <em>H</em><sub><em>x</em></sub><em>H</em><sub><em>z</em></sub><sup><em>T</em></sup></span>
+                    and evaluates to <span class="math inline">0</span> because the rows of
+                    <span class="math inline"><em>H</em></span> are the binary
+                    representation of the stabilizer generators. Given an <span
+                    class="math inline"><em>n</em>−</span>qubit Pauli error <span
+                    class="math inline"><em>P</em>,</span> we can define the syndrome <span
+                    class="math display"><em>s</em> := <strong>H</strong> ⊙ <em>P</em><sup><em>T</em></sup> = (<em>H</em><sub><em>z</em></sub><em>P</em><sub><em>x</em></sub><sup><em>T</em></sup>+<em>H</em><sub><em>x</em></sub><em>P</em><sub><em>z</em></sub><sup><em>T</em></sup>) mod  2</span>
+                    If <span class="math inline"><em>s</em> ≠ 0</span>, then we have
+                    detected the error <span class="math inline"><em>P</em></span>, which is
+                    similar to classical correction.</p>
+                    <div class="definition">
+                    <p><strong>Definition 7</strong>. We can define a parity check matrix
+                    <strong>H</strong> with the isomorphism <span
+                    class="math inline"><em>β</em></span>. <em>Stabilizer codes</em> are
+                    defined by their parity check matrix (PCM), where the rows are the
+                    binary symplectic form of the stabilizer generators.</p>
+                    </div>
+                    <p>A stabilizer code is denoted by <span
+                    class="math display">[[<em>N</em>,<em>k</em>,<em>d</em>]],</span> where
+                    <span class="math inline"><em>N</em></span> is the number of physical
+                    qubits, <span class="math inline"><em>k</em></span> is the number of
+                    encoded qubits, and <span class="math inline"><em>d</em></span> is the
+                    minimum distance. The distance between to encodings is the number of bit
+                    flips required to turn one into the other. As we alluded to earlier, the
+                    codespace of a stabilizer code is determined by the solutions to <span
+                    class="math display"><strong>H</strong><em>x</em> = 0,</span> meaning
+                    any string that commutes with the stabilizers; i.e. the centralizers.
+                    There are <span class="math inline">2<sup><em>k</em></sup></span> cosets
+                    of the stabilizer, so when we encode one qubit like in the Steane <span
+                    class="math inline">[[7,1,3]]</span> code, the cosets correspond to
+                    logical <span class="math inline">0</span> or logical <span
+                    class="math inline">1</span>. With a larger <span
+                    class="math inline"><em>k</em></span>, we would have cosets
+                    corresponding to logical <span class="math inline">010, 100, 110,</span>
+                    etcetera. The minimum distance is the minimum distance between cosets.
+                    For the <span class="math inline">[[17,1,5]]</span> code, if <span
+                    class="math inline"><em>a</em></span> is in the coset corresponding to
+                    <span class="math inline">$\ket{0}_L$</span> and <span
+                    class="math inline"><em>b</em></span> is in the coset corresponding to
+                    <span class="math inline">$\ket{1}_L$</span>, then we know the minimum
+                    distance between <span class="math inline"><em>a</em></span> and <span
+                    class="math inline"><em>b</em></span> is <span
+                    class="math inline">5</span>. Since stabilizer codes are built from
+                    solutions to the PCM, we can decompose any error operator <span
+                    class="math inline"><em>E</em></span> into the following components
+                    <span
+                    class="math display"><em>E</em> = <em>T</em> ⋅ <em>L</em> ⋅ <em>S</em></span>
+                    where <span class="math inline"><em>T</em></span> is the pure error,
+                    <span class="math inline"><em>L</em></span> is the logical operator, and
+                    <span class="math inline"><em>S</em></span> is the stabilizer
+                    operator.</p>
+                    <p>We will now explicitly demonstrate what it means to encode a qubit
+                    using the stabilizers.</p>
+                    <h1 id="Section 2">Encoding Qubits</h1>
+                    <p>We can use the explicit logical Steane encoding to understand how the
+                    [[17,1,5]] code goes about encoding information. We begin with encoding
+                    logical <span class="math inline">$\ket{0}_L$</span>.</p>
+                    <ol>
+                    <li><p><strong>Given the stabilizers:</strong> <span
+                    class="math display">$$\includegraphics[width=0.15\textwidth]{Steane-Stabilizers.png}$$</span></p>
+                    <ul>
+                    <li><p>We can convert the above stabilizers to binary-symplectic form to
+                    get a PCM. The Steane code is an example of a CSS code, which means the
+                    <span class="math inline"><em>Z</em></span> and <span
+                    class="math inline"><em>X</em></span> stabilizers are symmetric. This
+                    means we don’t have to do out a full matrix, and we can slightly adjust
+                    our isomorphism <span class="math inline"><em>β</em></span>. We can pick
+                    just to work with <span class="math inline"><em>Z</em></span>
+                    stabilizers for example, and define them with <span
+                    class="math display"><em>α</em> : <em>I</em> ↦ 0, <em>Z</em> ↦ 1</span></p>
+                    <p>So, we can turn <span class="math inline">7−</span>qubit long
+                    operators into binary strings of length <span
+                    class="math inline">7</span> to get the shorter PCM: <span
+                    class="math display">$$\begin{pmatrix}
+                            1 &amp; 1 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 0\\
+                            1 &amp; 0 &amp; 1 &amp; 0 &amp; 1 &amp; 0 &amp; 1\\
+                            1 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0
+                        \end{pmatrix}$$</span></p></li>
+                    <li><p>We row reduce to get a PCM of the form <span
+                    class="math inline">(<em>I</em>|<em>A</em>)</span> <span
+                    class="math display">$$\begin{pmatrix}
+                                1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 &amp; 1\\
+                                0 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 1\\
+                                0 &amp; 0 &amp; 1 &amp; 1 &amp; 1 &amp; 1 &amp; 0
+                            \end{pmatrix}$$</span></p></li>
+                    <li><p>We can consider the matrix as representing the CNOT gates of the
+                    encoding circuit: <span class="math inline"><em>I</em></span> as having
+                    3 control qubits, and the rows of <span
+                    class="math inline"><em>A</em></span> as being the respective 4 target
+                    qubits. The control qubits are prepared in the <span
+                    class="math inline">$\ket{+}$</span> state, and the targets in the <span
+                    class="math inline">$\ket{0}$</span> state. We can think of the matrix
+                    as looking like <span class="math display">$$\begin{pmatrix}
+                                + &amp; &amp; &amp; 0 &amp; &amp; 0 &amp; 0\\
+                                &amp; + &amp; &amp; 0 &amp; 0 &amp; &amp; 0\\
+                                &amp; &amp; + &amp; 0 &amp; 0 &amp; 0 &amp;
+                            \end{pmatrix}$$</span></p></li>
+                    <li><p>Each <span class="math inline">$\ket{+}$</span> state can be
+                    thought of as <span
+                    class="math inline">$\frac{1}{\sqrt{2}}(\ket{0}+\ket{1})$</span>. Since
+                    we have <span class="math inline">3</span> states of superposition, we
+                    have <span class="math inline">8</span> basis states which are summed
+                    together with a coefficient of <span
+                    class="math inline">$\frac{1}{\sqrt{2}^3}=\frac{1}{\sqrt{8}}$</span>:
+                    <span class="math display">$$\begin{aligned}
+                            \{\psi_{in}\}&amp;=
+                            \begin{Bmatrix}
+                                \ket{0000|000},\\
+                                \ket{0111|100},\\
+                                \ket{1011|010},\\
+                                \ket{1100|110},\\
+                                \ket{1011|001},\\
+                                \ket{1010|101},\\
+                                \ket{0110|011},\\
+                                \ket{0001|111}
+                            \end{Bmatrix}\text{   (the $|$ represents symbolic divide
+                    between control and target)}\\
+                            \ket{0_L}&amp;=\frac{1}{\sqrt{8}}\left(\sum_{\psi\in\{\psi_{in}\}}\psi\right)
+                            
+                    \end{aligned}$$</span> We can also visualize the matrix by doing out the
+                    encoding circuit:</p>
+                    <p><span class="math display">$$\hspace*{-2cm}  
+                    \includegraphics[width=0.8\textwidth]{qiskit_circuit.png}$$</span> There
+                    are <span class="math inline">2<sup>3</sup> = 8</span> basis states, and
+                    the stabilizer group is composed of these basis states exactly. Even
+                    though the Steane code technically has <span
+                    class="math inline">6</span> stabilizer generators, because it is a CSS
+                    code, we can do a complete/functional error correction using only <span
+                    class="math inline">3</span>.</p></li>
+                    <li><p>This means that given the stabilizers of the [[17-1-5]] code
+                    (we’ll see how to derive these in the next section): <span
+                    class="math display">$$\includegraphics[width=0.2\textwidth]{17-1-5_Stabilizers.png}$$</span>
+                    We can row-reduce on the first <span class="math inline">8</span>
+                    generators (since <span class="math inline"><em>Z</em></span> and <span
+                    class="math inline"><em>X</em></span> are symmetric) to get the parity
+                    check matrix which will define our encoding circuit. <span
+                    class="math display">$$\left(\begin{tabular}{lllllllllllllllll}
+                                1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 &amp; 0 &amp; 0
+                    &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 1 &amp; 1 &amp;
+                    1\\
+                                0 &amp; 1 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+                    &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp;
+                    0\\
+                                0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 1 &amp; 0 &amp; 0
+                    &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 1 &amp;
+                    1\\
+                                0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0
+                    &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp;
+                    0\\
+                                0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0
+                    &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp;
+                    1\\
+                                0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1
+                    &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp;
+                    1\\
+                                0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+                    &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 0
+                    \\
+                                0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+                    &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0 &amp; 0 &amp; 1 &amp; 1 &amp; 0
+                    \\
+                            \end{tabular}\right)$$</span> It is unnecessary to permute
+                    columns and get a matrix into standard form, <span
+                    class="math inline">(<em>I</em>|<em>A</em>)</span>. Steane is a nice
+                    matrix since it row-reduced to standard form, but this one clearly did
+                    not. Fortunately, we don’t need it to, and we can just take our control
+                    qubits to be the pivot points (so qubits <span
+                    class="math inline">1, 2, 3, 5, 7, 8, 9</span> and <span
+                    class="math inline">11</span> in this case) for an encoding matrix that
+                    looks as follows: <span
+                    class="math display">$$\left(\begin{tabular}{lllllllllllllllll}
+                                +&amp;&amp;&amp;0&amp;&amp;0&amp;&amp;&amp;&amp;0&amp;&amp;&amp;0&amp;&amp;0&amp;0&amp;0\\
+                                &amp;+&amp;&amp;0&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;0&amp;0&amp;&amp;&amp;\\
+                                &amp;&amp;+&amp;0&amp;&amp;0&amp;&amp;&amp;&amp;0&amp;&amp;&amp;&amp;0&amp;0&amp;0&amp;0\\
+                                &amp;&amp;&amp;&amp;+&amp;0&amp;&amp;&amp;&amp;&amp;&amp;&amp;0&amp;0&amp;&amp;&amp;\\
+                                &amp;&amp;&amp;&amp;&amp;&amp;+&amp;&amp;&amp;&amp;&amp;0&amp;&amp;&amp;0&amp;&amp;0\\
+                                &amp;&amp;&amp;&amp;&amp;&amp;&amp;+&amp;&amp;&amp;&amp;0&amp;&amp;&amp;&amp;0&amp;0\\
+                                &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;+&amp;0&amp;&amp;&amp;0&amp;0&amp;&amp;\\
+                                &amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;&amp;+&amp;0&amp;&amp;&amp;0&amp;0\\
+                            \end{tabular}\right)$$</span></p></li>
+                    <li><p>We can use this method to encode <span
+                    class="math inline">$\ket{0}_L$</span> and <span
+                    class="math inline">$\ket{1}_L$</span> for the [[17,1,5]] code. There
+                    are <span class="math inline">2<sup>8</sup> = 256</span> basis states
+                    because as we saw, there are <span class="math inline">8</span> encoding
+                    qubits.</p></li>
+                    </ul></li>
+                    </ol>
+                    <h1 id="topology-and-toric-codes">Topology and Toric Codes</h1>
+                    <p>When we talk about the 17-1-5 code, we usually get this image: <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{seventeen-one-five.png}$$</span>
+                    This is a topological representation of the code. Specifically, it is an
+                    example of a <em>toric code</em>. The <span
+                    class="math inline">17</span> vertices correspond to the <span
+                    class="math inline">17</span> physical qubits. The faces of the shapes,
+                    which are usually called <em>plaquettes</em>, correspond to the <span
+                    class="math inline">8</span> <span
+                    class="math inline"><em>Z</em></span>-stabilizer generators, with a
+                    symmetric representation in the <span
+                    class="math inline"><em>X</em>−</span>stabilizer generators. If we
+                    number the dots left to right, top to bottom, and generate strings with
+                    <span class="math inline"><em>Z</em></span> operators on the boundary of
+                    each plaquette, we get the stabilizer generators. For example, the first
+                    green trapezoid corresponds to <span
+                    class="math inline"><em>Z</em><em>I</em><em>Z</em><em>I</em><em>Z</em><em>Z</em><em>I</em><em>I</em><em>I</em><em>I</em><em>I</em><em>I</em><em>I</em><em>I</em><em>I</em><em>I</em><em>I</em></span>,
+                    which is one of the generators. Let’s understand <em>why</em> these
+                    faces correspond to stabilizers and how to further analyze a picture
+                    like this.</p>
+                    <div class="definition">
+                    <p><strong>Definition 8</strong>. A <em>torus</em> is a surface defined
+                    by having one hole; it is most commonly associated with the donut shape.
+                    There’s a joke about topologists not knowing the difference between a
+                    donut and a coffee mug: this is because the coffee mug can be deformed
+                    into the donut; it only has one hole.</p>
+                    <p>A <em>toric code</em> is called that because the picture
+                    representation can be mapped onto a torus. It’s hard to see with the
+                    17-1-5, so we’ll start with a much simpler lattice.</p>
+                    </div>
+                    <p>A <em>lattice</em> is like a torus laid flat. It is a grid where the
+                    top and bottom edge are ’the same’, and the side edges are ’the same’.
+                    If we fold up a piece of paper according to those rules, we get a
+                    torus.<br />
+                    <a
+                    href="https://upload.wikimedia.org/wikipedia/commons/6/60/Torus_from_rectangle.gif"
+                    class="uri">https://upload.wikimedia.org/wikipedia/commons/6/60/Torus_from_rectangle.gif</a><br />
+                    So, a toric code typically looks like a lattice with qubits at the
+                    vertices: <span class="math display">$$\begin{tikzpicture}[scale=0.4]
+                      % Specify the dimensions
+                      \def\width{5} % Width of the grid
+                      \def\height{5} % Height of the grid
+                      \def\lineLength{0.6} % Length of the lines
+                    
+                      % Drawing the vertical lines
+                      \foreach \x in {1,...,4} {
+                        \draw (\x,0) -- ++(0,\height);
+                      }
+                      
+                      % Drawing the horizontal lines
+                      \foreach \y in {1,...,4} {
+                        \draw (0,\y) -- ++(\width,0);
+                      }
+                      
+                      % Drawing the circles at each vertex
+                      \foreach \x in {1,...,4} {
+                        \foreach \y in {1,...,4} {
+                          \fill (\x,\y) circle (0.2);
+                        }
+                      }
+                    \end{tikzpicture}$$</span> Remembering that this table depicts a
+                    3-dimensional figure, these two lines <span
+                    class="math display">$$\begin{tikzpicture}[scale=0.4]
+                      % Specify the dimensions
+                      \def\width{5} % Width of the grid
+                      \def\height{5} % Height of the grid
+                      \def\lineLength{0.6} % Length of the lines
+                    
+                      % Drawing the vertical lines
+                      \foreach \x in {1,...,4} {
+                        \ifnum\x=3
+                          \draw[blue, line width=3] (\x,0) -- ++(0,\height);
+                        \else
+                          \draw (\x,0) -- ++(0,\height);
+                        \fi
+                      }
+                      
+                      % Drawing the horizontal lines
+                      \foreach \y in {1,...,4} {
+                        \draw (0,\y) -- ++(\width,0);
+                      }
+                      
+                      % Drawing the circles at each vertex
+                      \foreach \x in {1,...,4} {
+                        \foreach \y in {1,...,4} {
+                          \fill (\x,\y) circle (0.2);
+                        }
+                      }
+                    \end{tikzpicture}\hspace{1cm} \begin{tikzpicture}[scale=0.4]
+                      % Specify the dimensions
+                      \def\width{5} % Width of the grid
+                      \def\height{5} % Height of the grid
+                      \def\lineLength{0.6} % Length of the lines
+                    
+                      % Drawing the vertical lines
+                      \foreach \x in {1,...,4} {
+                            \draw (\x,0) -- ++(0,\height);    
+                      }
+                      
+                      % Drawing the horizontal lines
+                      \foreach \y in {1,...,4} {
+                        \ifnum\y=3
+                          \draw[red, line width=3] (0,\y) -- ++(\width,0);
+                        \else
+                          \draw (0,\y) -- ++(\width, 0);
+                        \fi;
+                      }
+                      
+                      % Drawing the circles at each vertex
+                      \foreach \x in {1,...,4} {
+                        \foreach \y in {1,...,4} {
+                          \fill (\x,\y) circle (0.2);
+                        }
+                      }
+                    \end{tikzpicture}$$</span> are actually loops when we visualize it as a
+                    torus: <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{non-trivial-loops.png}$$</span>
+                    These loops are called <em>non-trivial loops</em> because they can’t be
+                    deformed (stretched, squished, etc) to a point and stay on the surface
+                    of the torus. Here’s an example of what trivial loops would look like
+                    <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{trivial.png}$$</span>
+                    [INCLUDE GIF OF SHRINKING GREEN LOOPS TO A POINT)]<br />
+                    The green loops are trivial because they can all be shrunk to a point
+                    while staying on the surface of the torus.</p>
+                    <div class="definition">
+                    <p><strong>Definition 9</strong>. Two loops are <em>homotopic</em> if
+                    they can be continuously deformed into each-other. This is why we call
+                    the loops on the outside face (not going all the way around) trivial:
+                    because they are homotopic to a point, which is a trivial loop.</p>
+                    </div>
+                    <p>The earlier example of two non-trivial loops also can’t be deformed
+                    into each other and represent the logical operators of the code.</p>
+                    <p>If we map a plaquette onto the torus, we get a trivial loop. When a
+                    loop is trivial, it essentially does nothing. The algebraic definition
+                    of the stabilizers were operators that "had no effect" on group
+                    elements: <span
+                    class="math inline"><em>S</em><sub>𝒢</sub> = {<em>s</em> : <em>s</em><em>g</em> = <em>g</em>, <em>g</em> ∈ 𝒢}</span>
+                    where <span class="math inline">𝒢</span> is some group and <span
+                    class="math inline"><em>S</em><sub>𝒢</sub></span> is the set of
+                    stabilizers of the group. It follows that any loop which is homotopic to
+                    a point, and therefore trivial, represents a stabilizer of the code.</p>
+                    <p>Similarly to the algebraic formalism, the composition of boundaries
+                    is still a stabilizer. Merging two trivial loops makes a third trivial
+                    loop. If we take, say, one of the logical operators and compose it with
+                    a stabilizer, we get the "virtually" same effect as if the logical
+                    operator was on its own:</p>
+                    <p>[WANT TO TURN BELOW INTO GIF] <span
+                    class="math display">$$\begin{tikzpicture}[scale=0.4]
+                      % Specify the dimensions
+                      \def\width{5} % Width of the grid
+                      \def\height{5} % Height of the grid
+                      \def\lineLength{0.6} % Length of the lines
+                    
+                      % Drawing the vertical lines
+                      \foreach \x in {1,...,4} {
+                        \ifnum\x=3
+                          \draw[blue, line width=3] (\x,0) -- ++(0,\height);
+                        \else
+                          \ifnum\x=2
+                            \draw[red, line width=3] (\x, 2) -- ++(0,1);
+                            \draw (\x,0) -- ++(0,2);
+                            \draw (\x,3) -- ++(0,2);
+                            \else
+                            \draw (\x,0) -- ++(0,\height);
+                          \fi     
+                        \fi
+                      }
+                      
+                      % Drawing the horizontal lines
+                      \foreach \y in {1,...,4} {
+                      \ifnum\y=2
+                            \draw[red, line width=3] (2, \y) -- ++(1,0);
+                            \draw (0,\y) -- ++(2,0);
+                            \draw (3,\y) -- ++(2,0);
+                       \else      
+                        \ifnum\y=3
+                            \draw[red, line width=3] (2, \y) -- ++(1,0);
+                            \draw (0,\y) -- ++(2,0);
+                            \draw (3,\y) -- ++(2,0);
+                       \else      
+                        \draw (0,\y) -- ++(\width,0);
+                        \fi
+                        \fi
+                      }
+                      
+                      % Drawing the circles at each vertex
+                      \foreach \x in {1,...,4} {
+                        \foreach \y in {1,...,4} {
+                          \fill (\x,\y) circle (0.2);
+                        }
+                      }
+                    \end{tikzpicture}\hspace{5mm}\to\hspace{5mm}
+                    \begin{tikzpicture}[scale=0.4]
+                      % Specify the dimensions
+                      \def\width{5} % Width of the grid
+                      \def\height{5} % Height of the grid
+                      \def\lineLength{0.6} % Length of the lines
+                    
+                      % Drawing the vertical lines
+                      \foreach \x in {1,...,4} {
+                        \ifnum\x=3
+                            \draw[blue, line width=3] (\x,0) -- ++(0,2);
+                            \draw[blue, line width=3] (\x,3) -- ++(0,2);
+                            \draw (\x,2) -- ++(0,1);
+                        \else
+                          \ifnum\x=2
+                            \draw[blue, line width=3] (\x, 2) -- ++(0,1);
+                            \draw (\x,0) -- ++(0,2);
+                            \draw (\x,3) -- ++(0,2);
+                            \else
+                                \draw (\x,0) -- ++(0,\height);
+                          \fi     
+                        \fi
+                      }
+                      
+                      % Drawing the horizontal lines
+                      \foreach \y in {1,...,4} {
+                      \ifnum\y=2
+                            \draw[blue, line width=3] (2, \y) -- ++(1,0);
+                            \draw (0,\y) -- ++(2,0);
+                            \draw (3,\y) -- ++(2,0);
+                       \else      
+                        \ifnum\y=3
+                            \draw[blue, line width=3] (2, \y) -- ++(1,0);
+                            \draw (0,\y) -- ++(2,0);
+                            \draw (3,\y) -- ++(2,0);
+                       \else      
+                        \draw (0,\y) -- ++(\width,0);
+                        \fi
+                        \fi
+                      }
+                      
+                      % Drawing the circles at each vertex
+                      \foreach \x in {1,...,4} {
+                        \foreach \y in {1,...,4} {
+                          \fill (\x,\y) circle (0.2);
+                        }
+                      }
+                    \end{tikzpicture}\hspace{5mm}\xrightarrow{\text{we can 'stretch' the
+                    blue to before}}\hspace{5mm}
+                    \begin{tikzpicture}[scale=0.4]
+                      % Specify the dimensions
+                      \def\width{5} % Width of the grid
+                      \def\height{5} % Height of the grid
+                      \def\lineLength{0.6} % Length of the lines
+                    
+                      % Drawing the vertical lines
+                      \foreach \x in {1,...,4} {
+                        \ifnum\x=3
+                          \draw[blue, line width=3] (\x,0) -- ++(0,\height);
+                        \else
+                          \draw (\x,0) -- ++(0,\height);
+                        \fi
+                      }
+                      
+                      % Drawing the horizontal lines
+                      \foreach \y in {1,...,4} {
+                        \draw (0,\y) -- ++(\width,0);
+                      }
+                      
+                      % Drawing the circles at each vertex
+                      \foreach \x in {1,...,4} {
+                        \foreach \y in {1,...,4} {
+                          \fill (\x,\y) circle (0.2);
+                        }
+                      }
+                    \end{tikzpicture}$$</span> If we take a logical operator <span
+                    class="math inline"><em>L</em></span> and compose it with any
+                    stabilizer, we know we can deform it back to itself. This operator <span
+                    class="math inline"><em>L</em></span> is the representative of all loops
+                    in the <span
+                    class="math inline"><em>L</em> ⋅ <em>S</em><sub>𝒢</sub></span>
+                    stabilizer coset, meaning all loops in the same stabilizer coset are
+                    homotopic to each other. If we have <span class="math inline">8</span>
+                    <span class="math inline"><em>Z</em></span>-stabilizer generators, then
+                    for one logical operator, there are <span
+                    class="math inline">2<sup>8</sup></span> homotopic loops. This
+                    corresponds to the <span class="math inline">2<sup>8</sup></span> basis
+                    states enumerated in the encoding of <span
+                    class="math inline">$\ket{0}_L$</span>.</p>
+                    <p>The 17-1-5 code isn’t a perfect lattice, and so doesn’t correspond
+                    directly to a simple torus. However, we can still make more sense of the
+                    picture. The code has distance <span class="math inline">5</span>. What
+                    this means is that in the diagram, a valid logical operator has minimum
+                    <span class="math inline">5</span> qubits; the logical operators are the
+                    strings which take 5 qubits to go from top to bottom or side to
+                    side.</p>
+                    <p>[STABILIZER VISUALIZATION HERE] using matplotlib</p>
+                    <h1 id="decoding-book-and-degeneracy">Decoding Book and Degeneracy</h1>
+                    <h3 id="creating-the-codebook">Creating the Codebook</h3>
+                    <p><br />
+                    There are two types of solutions to <span
+                    class="math inline"><strong>H</strong><em>x</em> = 0</span>, where
+                    <strong>H</strong> is the parity check matrix. We can find the
+                    generators for all possible solutions by finding the orthogonal
+                    complement to <strong>H</strong> (called it <span
+                    class="math inline"><em>G</em></span>), because by definition <span
+                    class="math inline"><em>H</em> ⋅ <em>G</em><sup><em>T</em></sup></span>
+                    will return a zero matrix. Because the symplectic product of each row of
+                    <span class="math inline"><em>G</em></span> with the stabilizers
+                    evaluates to <span class="math inline">0</span>, this means each row
+                    commutes with all the stabilizers, so each row is a generator for the
+                    centralizer group.</p>
+                    <p><span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{gfqla.png}$$</span>
+                    <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{matrices.png}$$</span>
+                    The codebook consists of all possible combinations of the generators.
+                    The orthogonal complement has <span class="math inline">9</span> rows,
+                    so we have <span class="math inline">9</span> generators for the entire
+                    group. Since we are working in a binary field, any given product can
+                    contain each generator once or zero times. Consider a smaller
+                    example:</p>
+                    <ol>
+                    <li><p>Let <span
+                    class="math inline"><em>a</em>, <em>b</em>, <em>c</em></span> be
+                    stabilizer generators. Recalling binary representation, there are <span
+                    class="math inline">8</span> distinct ways to combine the <span
+                    class="math inline">3</span></p></li>
+                    <li><p>For example, <span class="math inline">110</span> could refer to
+                    the stabilizer <span class="math inline"><em>a</em> ⋅ <em>b</em></span>.
+                    <span class="math inline">101</span> corresponds to <span
+                    class="math inline"><em>a</em> ⋅ <em>c</em></span>.</p></li>
+                    <li><p>Any stabilizer generated from <span
+                    class="math inline"><em>a</em>, <em>b</em>, <em>c</em></span> has the
+                    form <span
+                    class="math inline"><em>a</em><sup><em>x</em><sub>1</sub></sup>, <em>b</em><sup><em>x</em><sub>2</sub></sup>, <em>c</em><sup><em>x</em><sub>3</sub></sup>,</span>
+                    where <span
+                    class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, <em>x</em><sub>3</sub></span>
+                    are all either <span class="math inline">0</span> or <span
+                    class="math inline">1</span>.</p></li>
+                    </ol>
+                    <p>So, since we have <span class="math inline">9</span> centralizer
+                    generators and <span class="math inline">8</span> stabilizer generators,
+                    we can enumerate every possible combination with the following
+                    program:<br />
+                    <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{combinations.png}$$</span><br />
+                    The <code>combinations</code> function constructs all <span
+                    class="math inline">2<sup><em>x</em></sup></span> binary
+                    representations, given <span class="math inline"><em>x</em></span>
+                    number of generators. The <code>assemble</code> function does the work
+                    of evaluating each combinations given an array of generators. We can use
+                    these functions to find all combinations of the stabilizer generators,
+                    which also correspond to our <span
+                    class="math inline">$\ket{0}_L$</span> basis states. Given this, we can
+                    find all basis states which correspond to <span
+                    class="math inline">$\ket{1}_L$</span>.</p>
+                    <p>Using the strategy described in , I simulated the <span
+                    class="math inline">$\ket{0}_L$</span> and <span
+                    class="math inline">$\ket{1}_L$</span> basis states to confirm my
+                    results. <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{circuit1.png}
+                    \includegraphics[width=0.5\textwidth]{circuit2.png}$$</span> <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{logical0.png}$$</span>
+                    I did have to reverse each string before comparison; this is due to the
+                    basis states being written from right to left in order of qubit
+                    (rightmost qubit is the first one)</p>
+                    <p>To find the <span class="math inline">$\ket{1}_L$</span>, basis
+                    states, I added a <code>NOT</code> gate (X) to each qubit right before
+                    measurement. This is the equivalent of flipping every single bit; and I
+                    found the centralizer and <span class="math inline">$\ket{1}_L$</span>
+                    to be equal. <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{logical1.png}$$</span>
+                    The codebook is comprised of all possible basis states, so it is exactly
+                    the stabilizer and centralizer lists.</p>
+                    <h3 id="creating-fixable-errors">Creating Fixable Errors</h3>
+                    <p><br />
+                    Since the [[17,1,5]] code has distance <span
+                    class="math inline">5</span>, we know we can unambiguously correct up to
+                    <span class="math inline">5//2 = 2</span> qubit errors. Since the
+                    minimum distance between logical operators is <span
+                    class="math inline">5</span> qubits, there is no chance of a <span
+                    class="math inline">2</span> qubit error pertaining to both <span
+                    class="math inline">$\ket{0}_L$</span> and <span
+                    class="math inline">$\ket{1}_L$</span> basis states.</p>
+                    <p>So, we need to find all possible <span class="math inline">1</span>
+                    and <span class="math inline">2</span> qubit errors. For a given
+                    codeword, there are <span class="math inline">17</span> possible <span
+                    class="math inline">1</span> qubit errors, and <span
+                    class="math inline">$\binom{17}{2}=136$</span> possible <span
+                    class="math inline">2</span> qubit errors, for a total of <span
+                    class="math inline">153</span> errors per codeword. Since we have <span
+                    class="math inline">512</span> codewords, there should be <span
+                    class="math inline">153 × 512 = 78336</span> fixable errors. However, we
+                    find this is not the case: <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{num_errors.png}$$</span></p>
+                    <p>We also have only <span class="math inline">115</span> syndromes
+                    instead of <span class="math inline">153</span>. The
+                    <code>error_syndromes</code> dictionary tracks which pure errors
+                    correspond to which syndrome. We know there must be multiple errors
+                    corresponding to the same syndrome, so we can use this dictionary to
+                    pick out exactly those special syndromes. As you can see, there are
+                    exactly <span class="math inline">153 − 115 = 38</span> errors
+                    corresponding to duplicate syndromes.<br />
+                    <span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{syndrome_errors.png}$$</span></p>
+                    <h3 id="degeneracy">Degeneracy</h3>
+                    <p><br />
+                    We say two errors are <em>degenerate</em> if they are in the same
+                    stabilizer coset, meaning they only differ by a stabilizer. For example,
+                    suppose two operators <span class="math inline"><em>E</em></span> and
+                    <span class="math inline"><em>E</em>′</span> are degenerate. Then <span
+                    class="math inline"><em>E</em> = <em>E</em>′ ⋅ <em>S</em><sub><em>i</em></sub></span>
+                    for some stabilizer element <span
+                    class="math inline"><em>S</em><sub><em>i</em></sub></span>. Observe
+                    <span class="math display">$$\begin{aligned}
+                        \ket{\overline{\psi}}_\psi&amp;=E'\ket{\overline{\psi}}\\
+                        &amp;= E\cdot S_i\ket{\overline{\psi}}\\
+                        &amp;= E\ket{\overline{\psi}}\\
+                        E'\ket{\overline{\psi}}&amp;=E\ket{\overline{\psi}}
+                    \end{aligned}$$</span> These two degenerate operators act on a codeword
+                    in the same way, or are indistinguishable in their effect on a quantum
+                    state. Suppose <span class="math inline"><em>R</em></span> is a recovery
+                    operator for <span class="math inline"><em>E</em></span>, meaning <span
+                    class="math inline">$R\cdot
+                    E\ket{\overline{\psi}}=\ket{\overline{\psi}}$</span>. Since <span
+                    class="math inline"><em>E</em></span> and <span
+                    class="math inline"><em>E</em>′</span> are degenerate, we have <span
+                    class="math display">$$\begin{aligned}
+                        R\cdot E'\ket{\overline{\psi}}&amp;=R\cdot E\ket{\overline{\psi}}\\
+                        &amp;=\ket{\overline{\psi}}
+                    \end{aligned}$$</span> which means <span
+                    class="math inline"><em>R</em></span> is a recovery operator for <span
+                    class="math inline"><em>E</em>′</span> as well! The phenomenon of
+                    degeneracy massively simplifies the problem of quantum error correction,
+                    since we only need to worry about all possible <span
+                    class="math inline"><em>T</em><sub><em>i</em></sub> ⋅ <em>L</em><sub><em>j</em></sub></span>
+                    operators, and not every single element of the Pauli group.</p>
+                    <p>The implication of this is that we can recover many different errors
+                    with only one recovery operator, which should improve the performance of
+                    quantum codes.</p>
+                    <p>What is happening in the decoding simulation is precisely the
+                    phenomenon of degeneracy: all errors which correspond to the same
+                    syndrome are degenerate. This means that given an error operator, we may
+                    have multiple possibilities for correcting bit flips. We don’t need a
+                    recovery operator to return us to the exact original word, we just need
+                    to get to a stabilizer, because these are homotopic to the identity
+                    (they can shrink to be trivial). How is this possible in a distance
+                    <span class="math inline">5</span> code? That minimum distance pertains
+                    to distance between distinct logical operators (<span
+                    class="math inline">$\ket{0}_L$</span> versus <span
+                    class="math inline">$\ket{1}_L$</span>), but within the stabilizer
+                    group, we have many instances of stabilizers with distance less than
+                    <span class="math inline">5</span>. The alternative definition to two
+                    degenerate codes is those which have a distance less than the minimum.
+                    If two stabilizers differ by <span class="math inline">4</span> bits,
+                    then they can both correspond to the same error of 2 qubit flips. Given
+                    the error, there are multiple options for error qubits because we would
+                    be able to reach two different stabilizers.
+                    <strong>Example:</strong></p>
+                    <p><span
+                    class="math display">$$\includegraphics[width=0.5\textwidth]{degen_example.png}$$</span><br />
+                    It is fairly simple to decode, given a syndrome. We can look up this
+                    syndrome in our dictionary to find all potential pure errors. Assuming
+                    only unambiguous errors, we know applying any one of these flips will
+                    return an encoding in the correct set (a <span
+                    class="math inline">$\ket{0}_L$</span> basis state or a <span
+                    class="math inline">$\ket{1}_L$</span> basis state). We can check the
+                    given codeword against the earlier lists of stabilizers and centralizers
+                    to determine which logical bit this encoding corresponds to.</p>
+                <!-- <h1>1 - Group Theory and Stabilizer Formalism</h1>
+                <br>
+                <h3>1.1 - Explaining Group Theory Using Modular Arithmetic</h3>
+                <br>
+                This section is a quick crash course on the group theory necessary to understand stabilizer codes. 
+                I’m going to use the integers --------, as my example of choice throughout, because 
+                it is probably the simplest. For reference,
+                --------
+                <br><br>
+                Definition 1.1. -------- is a group under addition, meaning addition is the group operation. It is a
+                group because it satisfies the following: <br>
+
+
+                <br><br> 
+               <br><br>
+               <a href="bex_g.html">Degeneracy and the [[17,1,5]] Code</a> -->
+               <object data="17_1_5.pdf" type="application/pdf" width="100%" height="1100px">
+            </p>
+        </section>
+
+        <script src="script.js"></script>
+    </body>
+   
+</html>
