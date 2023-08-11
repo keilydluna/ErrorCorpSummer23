@@ -87,7 +87,7 @@ nav li
     align-items: center;
     height: 110vh;
     background: url('bg_fff.png') no-repeat;
-    background-size: cover;
+    background-size: auto;
     background-position: bottom;
     background-attachment: scroll;
 }
@@ -141,10 +141,11 @@ nav li
 .sec
 {
     font-size: 1em;
-    height: 1000px;
+    height: 1600px;
     background-color: white;
     padding: 50px 200px;
 }
+
 
 
 .sec p
@@ -156,6 +157,8 @@ nav li
     line-height: 50px;
     text-align: center;
 }
+
+
 
 
 .how

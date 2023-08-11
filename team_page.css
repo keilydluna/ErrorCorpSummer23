@@ -122,24 +122,6 @@ nav li
     transform: translateY(-20px);
 }
 
-.slogan img
-{
-    position: fixed;
-    top: 50;
-    left: 0;
-    width: 100%;
-    pointer-events: none;
-}
-
-.slogan img#summerglitch
-{
-    transform: translateY(-200px);
-}
-
-.slogan img#glitch2023
-{
-    transform: translateY(175px);
-}
 
 .ourteam
 {
@@ -159,9 +141,10 @@ nav li
 .sec
 {
     font-size: 1em;
-    height: 300px;
+    height: 700px;
     background-color: white;
     padding: 30px 200px;
+    text-align: center;
 }
 
 
