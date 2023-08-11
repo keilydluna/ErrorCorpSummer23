@@ -136,12 +136,33 @@ nav li
     background-position: bottom;
     background-attachment: scroll;
     font-size: 1.5em;
+    transition: .3s;
 }
 
+/* .why:scrol
+{
+    /* color: #7ba6cd; */
+    /* -webkit-box-shadow: 0 0 20px 1px #7ba6cd; */
+    /* background: #d3d3d3; */
+    /* height: 110vh; */
+    /*z-index: -1;*/
+/* }  */
+
+
+#whyq
+{
+    font-size: 3em;
+    width: 700px;
+    /* padding: 150px; */
+    position: absolute;
+    text-align: center;
+    color: white;
+    /* text-shadow: 1px 2px 5px #0b2451; */
+}
 .sec
 {
     font-size: 1em;
-    height: 1600px;
+    height: 1570px;
     background-color: white;
     padding: 50px 200px;
 }

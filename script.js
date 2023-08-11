@@ -17,6 +17,7 @@ let text = document.getElementById("text");
 let left_item = document.getElementById("left_item");
 let right_item = document.getElementById("right_item");
 let whole_glitch = document.getElementById("whole_glitch");
+let whyq = document.getElementById("whyq");
 
 window.addEventListener("scroll", () => { 
     let value = window.scrollY
@@ -26,5 +27,15 @@ window.addEventListener("scroll", () => {
     summerglitch.style.left = value * -2.5 + 'px';
     glitch2023.style.left = value * 2.5 + 'px';
     // bg_1_2.style.marginTop = value * -2.5 + 'px';
-});
+    whyq.style.flexGrow = "2";
+}
+
+
+// let whyq = document.getElementById("whyq");
+
+// window.addEventListener("scroll", () => { 
+//     let value = window.scrollY
+//     whyq.style.marginTop = value * -2.5 + 'px';
+// }
+);
 
